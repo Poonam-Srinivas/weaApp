@@ -14,7 +14,7 @@ import {API_KEY} from './Constants';
 export default function Details(props) {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   const {name} = props.route.params;
 
@@ -48,14 +48,9 @@ export default function Details(props) {
       setData(res);
       setIsLoading(false);
     } catch (error) {
-      if (error) {
-      }
-      setError(error);
+      setError(true);
       console.log('Error fetching data', error);
       setIsLoading(false);
-    }
-    if (error) {
-      return <Text>Error: {error.message}</Text>;
     }
   };
 
@@ -100,7 +95,9 @@ export default function Details(props) {
 
         {isLoading ? (
           <ActivityIndicator animating={isLoading} color={'red'} />
-        ) : (
+        ) : error? (<View style={{height:400,widht:'90%', alignItems:'center',justifyContent:'center',alignSelf:'center'}}>
+                        <Text>Something went wrong</Text>
+                    </View>) : (
           <View
             style={{
               flexDirection: 'column',
