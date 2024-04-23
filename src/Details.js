@@ -14,7 +14,7 @@ import {API_KEY} from './Constants';
 export default function Details(props) {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const {name} = props.route.params;
 
@@ -43,14 +43,16 @@ export default function Details(props) {
       const result = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${API_KEY}`,
       );
+
       const res = await result.json();
-      console.log(res);
       setData(res);
       setIsLoading(false);
+      console.log('in try block', res);
     } catch (error) {
-      setError(true);
+      setIsError(true);
       console.log('Error fetching data', error);
       setIsLoading(false);
+      console.log('in catch block');
     }
   };
 
@@ -95,9 +97,18 @@ export default function Details(props) {
 
         {isLoading ? (
           <ActivityIndicator animating={isLoading} color={'red'} />
-        ) : error? (<View style={{height:400,widht:'90%', alignItems:'center',justifyContent:'center',alignSelf:'center'}}>
-                        <Text>Something went wrong</Text>
-                    </View>) : (
+        ) : isError ? (
+          <View
+            style={{
+              height: 400,
+              widht: '90%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}>
+            <Text>Something went wrong</Text>
+          </View>
+        ) : (
           <View
             style={{
               flexDirection: 'column',
@@ -113,7 +124,7 @@ export default function Details(props) {
             </View>
 
             <Text style={{color: 'white', fontSize: 64}}>
-              {(data.main.temp - 273).toFixed(2)}&deg; C
+              {(data.main.temp - 273).toFixed(2)}&deg;C
             </Text>
 
             <View>
